@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 
 import 'animation_percent_circle_widget.dart';
 import 'color_config.dart';
+import 'widgets/physical/physical_painter.dart';
+import 'widgets/training_status/training_status_widget.dart';
 
 class ProcessPage extends StatefulWidget {
   const ProcessPage({Key? key}) : super(key: key);
@@ -148,50 +150,65 @@ class _ProcessPageState extends State<ProcessPage> {
           required String title,
           Widget? leftValueWidget,
           Widget? rightValueWidget,
-          String? content}) {
+          String? content,
+          double paddingVertical = 20.0}) {
         return Container(
           // constraints: const BoxConstraints(minHeight: 100),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8.0),
             color: const Color(0xff161B31),
           ),
-          padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20),
+          padding:
+              EdgeInsets.symmetric(vertical: paddingVertical, horizontal: 20),
           margin: const EdgeInsets.only(bottom: 10),
-          child: Row(
+          child: Column(
             children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(
-                          iconData,
-                          color: colorIconData,
-                        ),
-                        const SizedBox(
-                          width: 5.0,
-                        ),
-                        Text(
-                          title,
-                          style: const TextStyle(
-                              color: Colors.white, fontSize: 16),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    if (leftValueWidget != null) leftValueWidget,
-                    if (content != null)
-                      Text(
-                        content,
-                        style: const TextStyle(color: Colors.grey),
-                      )
-                  ],
-                ),
+              Row(
+                children: [
+                  Icon(
+                    iconData,
+                    color: colorIconData,
+                  ),
+                  const SizedBox(
+                    width: 5.0,
+                  ),
+                  Text(
+                    title,
+                    style: const TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                ],
               ),
-              if (rightValueWidget != null) rightValueWidget
+              const SizedBox(
+                height: 10,
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 5.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (leftValueWidget != null) leftValueWidget,
+                          if (content != null) ...[
+                            const SizedBox(
+                              height: 5.0,
+                            ),
+                            Text(
+                              content,
+                              style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: leftValueWidget != null ? 12 : 14),
+                            )
+                          ]
+                        ],
+                      ),
+                    ),
+                  ),
+                  if (rightValueWidget != null) rightValueWidget
+                ],
+              ),
             ],
           ),
         );
@@ -336,10 +353,62 @@ class _ProcessPageState extends State<ProcessPage> {
                                   content: "Tuần này không có lịch tập"),
                               __itemMiddleWidget(
                                   iconData: Icons.stacked_bar_chart,
-                                  colorIconData: Colors.lightBlueAccent,
+                                  colorIconData: const Color(0xff449BFA),
                                   title: "Tình trạng luyện tập",
-                                  content:
-                                      "Tình trạng luyện tập sẽ được đề xuất sau 6 ngày"),
+                                  rightValueWidget:
+                                      const TrainingStatusWidget(),
+                                  leftValueWidget: const Text(
+                                    "Đang giảm",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 18),
+                                  )),
+                              __itemMiddleWidget(
+                                iconData: Icons.bolt_outlined,
+                                colorIconData: const Color(0xff31B8BD),
+                                title: "Hồi phục",
+                                content: "Hồi phục hoàn toàn",
+                                paddingVertical: 10.0,
+                                leftValueWidget: const Text(
+                                  "100%",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 26,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                rightValueWidget: Container(
+                                  height: 70,
+                                  width: 120,
+                                  child: Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 30),
+                                        child: CustomPaint(
+                                          painter: PhysicalPainter(1.0),
+                                        ),
+                                      ),
+                                      Column(
+                                        children: const [
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          Icon(Icons.self_improvement_outlined,
+                                              color: Colors.white, size: 40),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          Text(
+                                            "Sảng khoái",
+                                            style: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 12),
+                                          )
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
                               __itemMiddleWidget(
                                   iconData: Icons.directions_run_outlined,
                                   colorIconData: Colors.orange,
