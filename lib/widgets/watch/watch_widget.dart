@@ -87,29 +87,32 @@ class _WatchWidgetState extends State<WatchWidget>
   @override
   void didUpdateWidget(covariant WatchWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.apiFinished) {
-      animationControllerCheck.animateTo(1.0,
-          duration: const Duration(milliseconds: 1000),
-          curve: Curves.easeInCirc);
-    } else {
-      // animationController.animateBack(0.0, duration: const Duration(milliseconds: 5000),);
-      animationControllerCheck
-          .animateTo(0.0,
-              duration: const Duration(milliseconds: 1000),
-              curve: Curves.easeInCirc)
-          .then((value) {
-        onProcessGreenCircle();
-      });
+    if(oldWidget.apiFinished != widget.apiFinished) {
+      if (widget.apiFinished) {
+        animationControllerCheck.animateTo(1.0,
+            duration: const Duration(milliseconds: 1000),
+            curve: Curves.easeInCirc);
+      } else {
+        // animationController.animateBack(0.0, duration: const Duration(milliseconds: 5000),);
+        animationControllerCheck
+            .animateTo(0.0,
+            duration: const Duration(milliseconds: 1000),
+            curve: Curves.easeInCirc)
+            .then((value) {
+          onProcessGreenCircle();
+        });
+      }
     }
-
-    if (widget.startApi) {
-      onProcessGreenCircle();
-      animationControllerBorder.value = 1.0;
-    } else {
-      // animationController.animateBack(0.0, duration: const Duration(milliseconds: 5000),);
-      animationControllerBorder.animateTo(0.0,
-          duration: const Duration(milliseconds: 1000),
-          curve: Curves.easeInCirc);
+    if(oldWidget.startApi != widget.startApi) {
+      if (widget.startApi) {
+        onProcessGreenCircle();
+        animationControllerBorder.value = 1.0;
+      } else {
+        // animationController.animateBack(0.0, duration: const Duration(milliseconds: 5000),);
+        animationControllerBorder.animateTo(0.0,
+            duration: const Duration(milliseconds: 1000),
+            curve: Curves.easeInCirc);
+      }
     }
   }
 

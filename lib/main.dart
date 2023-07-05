@@ -3,10 +3,16 @@ import 'dart:ui';
 import 'package:coros/activity_page.dart';
 import 'package:coros/process_page.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 import 'color_config.dart';
+import 'pages/user/user_details_page.dart';
+
+GetIt getIt = GetIt.instance;
 
 void main() {
+  // getIt.registerSingleton<User>(const User());
+
   runApp(const MyApp());
 }
 
@@ -19,11 +25,27 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
+      // theme: ThemeData(
+      //   primarySwatch: Colors.blue,
+      // ),
       theme: ThemeData(
+        // cupertinoOverrideTheme: const CupertinoThemeData(
+        //   textTheme: CupertinoTextThemeData(
+        //     dateTimePickerTextStyle:
+        //         TextStyle(color: Colors.white, fontSize: 20),
+        //   ),
+        // ),
         primarySwatch: Colors.blue,
       ),
-      scrollBehavior: ScrollBehavior().copyWith(overscroll: false),
+      scrollBehavior: const ScrollBehavior().copyWith(overscroll: false),
       home: const HomePage(),
+      // localizationsDelegates: [
+      //   GlobalMaterialLocalizations.delegate
+      // ],
+      // supportedLocales: [
+      //   const Locale('en'),
+      //   const Locale('vi')
+      // ],
     );
   }
 }
@@ -38,16 +60,9 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   PageController pageController = PageController();
 
-  final List<Widget> _tabs = <Widget>[
-    const ProcessPage(),
-    const ActivityPage(),
-    Container(
-      color: Colors.blue,
-    ),
-    Container(
-      color: Colors.yellow,
-    ),
-  ];
+  bool _visibleBottomBar = true;
+
+  List<Widget> _tabs = [];
 
   int _selectedIndex = 0;
 
@@ -63,6 +78,18 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    _tabs = <Widget>[
+      ProcessPage(onGetVisible: (visible) {
+        setState(() {
+          _visibleBottomBar = visible;
+        });
+      }),
+      const ActivityPage(),
+      Container(
+        color: Colors.blue,
+      ),
+      const UserDetailsPage()
+    ];
   }
 
   @override
@@ -79,34 +106,46 @@ class _HomePageState extends State<HomePage> {
         );
       }
 
-      return Container(
-        height: 70,
-        clipBehavior: Clip.hardEdge,
-        decoration: BoxDecoration(
-          color: ColorConfig.primaryColor.withOpacity(0.5),
-        ),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 8.0, sigmaY: 8.0),
-          child: BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
-            backgroundColor: Colors.transparent,
-            selectedLabelStyle: const TextStyle(
-                color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 12),
-            unselectedItemColor: Colors.grey,
-            items: <BottomNavigationBarItem>[
-              __bottomNavigationBarItemWidget(
-                  Icons.energy_savings_leaf_outlined, "Tiến trình"),
-              __bottomNavigationBarItemWidget(
-                  Icons.format_list_bulleted_outlined, "Hoạt động"),
-              __bottomNavigationBarItemWidget(Icons.map_outlined, "Khám phá"),
-              __bottomNavigationBarItemWidget(
-                  Icons.person_outline_outlined, "Hồ sơ"),
-            ],
-            currentIndex: _selectedIndex,
-            //New
-            onTap: _onItemTapped,
-          ),
-        ),
+      return AnimatedContainer(
+        duration: const Duration(milliseconds: 1),
+        height: _visibleBottomBar ? 70 : 0,
+        child: _visibleBottomBar
+            ? Container(
+                height: 70,
+                clipBehavior: Clip.hardEdge,
+                decoration: BoxDecoration(
+                  color: ColorConfig.primaryColor.withOpacity(0.5),
+                ),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 8.0, sigmaY: 8.0),
+                  child: BottomNavigationBar(
+                    type: BottomNavigationBarType.fixed,
+                    backgroundColor: Colors.transparent,
+                    selectedLabelStyle: const TextStyle(
+                        color: Colors.blue,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12),
+                    unselectedItemColor: Colors.grey,
+                    items: <BottomNavigationBarItem>[
+                      __bottomNavigationBarItemWidget(
+                          Icons.energy_savings_leaf_outlined, "Tiến trình"),
+                      __bottomNavigationBarItemWidget(
+                          Icons.format_list_bulleted_outlined, "Hoạt động"),
+                      __bottomNavigationBarItemWidget(
+                          Icons.map_outlined, "Khám phá"),
+                      __bottomNavigationBarItemWidget(
+                          Icons.person_outline_outlined, "Hồ sơ"),
+                    ],
+                    currentIndex: _selectedIndex,
+                    //New
+                    onTap: _onItemTapped,
+                  ),
+                ),
+              )
+            : Container(
+                color: ColorConfig.primaryColor,
+                width: MediaQuery.of(context).size.width,
+              ),
       );
     }
 
