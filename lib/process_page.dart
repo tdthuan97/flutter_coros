@@ -3,12 +3,16 @@ import 'dart:ui';
 import 'package:coros/widgets/watch/watch_widget.dart';
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'animation_percent_circle_widget.dart';
 import 'color_config.dart';
+import 'widgets/magnifying_glass_painter.dart';
 import 'widgets/physical/physical_painter.dart';
+import 'widgets/radar/radar_widget.dart';
 import 'widgets/training_status/training_status_widget.dart';
+import 'widgets/weight_cupertino_picker_widget.dart';
 
 class ProcessPage extends StatefulWidget {
   const ProcessPage({Key? key, required this.onGetVisible}) : super(key: key);
@@ -83,6 +87,71 @@ class _ProcessPageState extends State<ProcessPage>
       tapEdit = true;
     });
     widget.onGetVisible(!tapEdit);
+  }
+
+  // This shows a CupertinoModalPopup with a reasonable fixed height which hosts CupertinoPicker.
+  void _showDialog(Widget child, String title) {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (BuildContext context) => Container(
+        // height: MediaQuery.of(context).size.height * 0.3,
+        decoration: const BoxDecoration(
+            color: Color(0xff161B31),
+            borderRadius:
+                BorderRadiusDirectional.vertical(top: Radius.circular(20.0))),
+        padding: const EdgeInsets.only(top: 6.0),
+        // The Bottom margin is provided to align the popup above the system navigation bar.
+        margin: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        // Provide a background color for the popup.
+
+        // color: CupertinoColors.systemBackground.resolveFrom(context),
+        // Use a SafeArea widget to avoid system overlaps.
+        child: SafeArea(
+          top: false,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Material(
+                color: const Color(0xff161B31),
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextButton(
+                          child: const Text(
+                            "Thoát",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          }),
+                      Text(
+                        title,
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                      TextButton(
+                          child: const Text(
+                            "Xác nhận",
+                            style: TextStyle(color: Colors.blue),
+                          ),
+                          onPressed: () {
+                            // Navigator.pop(context);
+                          }),
+                    ],
+                  ),
+                ),
+              ),
+              child,
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -530,7 +599,28 @@ class _ProcessPageState extends State<ProcessPage>
                                                 color: Colors.grey[500]),
                                           ),
                                           IconButton(
-                                              onPressed: () {},
+                                              onPressed: () {
+                                                _showDialog(
+                                                    WeightCupertinoPickerWidget(
+                                                      heightWidget:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height *
+                                                              0.3,
+                                                      weightHeight: 62.0,
+                                                      // indexKgCurrent: indexKgCurrent,
+                                                      // indexGramCurrent: indexGramCurrent,
+                                                      callBackWeight: (weight,
+                                                          indexKg, indexGram) {
+                                                        // setState(() {
+                                                        //   weightCurrent = weight;
+                                                        //   indexKgCurrent = indexKg;
+                                                        //   indexGramCurrent = indexGram;
+                                                        // });
+                                                      },
+                                                    ),
+                                                    "Trọng lượng cơ thể");
+                                              },
                                               icon: Icon(
                                                 Icons
                                                     .mode_edit_outline_outlined,
@@ -540,6 +630,7 @@ class _ProcessPageState extends State<ProcessPage>
                                         ],
                                       );
                                     }(),
+                                    rightValueWidget: const RadarWidget()
                                   ),
                                   const SizedBox(
                                     height: 10,
@@ -581,14 +672,20 @@ class _ProcessPageState extends State<ProcessPage>
                               Positioned(
                                 left: dragGesturePosition.dx,
                                 top: dragGesturePosition.dy,
-                                child: const RawMagnifier(
-                                  size: Size(150, 150),
+                                child:  RawMagnifier(
+                                  size: const Size(100, 100),
                                   magnificationScale: 2,
                                   focalPointOffset: Offset.zero,
-                                  decoration: MagnifierDecoration(
-                                    shape: CircleBorder(
-                                      side: BorderSide(
-                                          color: Colors.pink, width: 3),
+                                  // decoration: const MagnifierDecoration(
+                                  //   shape: CircleBorder(
+                                  //     side: BorderSide(
+                                  //         color: Colors.pink, width: 3),
+                                  //   ),
+                                  // ),
+                                  child: Center(
+                                    child: CustomPaint(
+                                      size:  const Size.fromRadius(50),
+                                      painter: MagnifyingGlassPainter(),
                                     ),
                                   ),
                                 ),

@@ -2,6 +2,7 @@ import 'package:coros/color_config.dart';
 import 'package:coros/main.dart';
 import 'package:coros/models/user.dart';
 import 'package:coros/widgets/cupertino_picker_widget.dart';
+import 'package:coros/widgets/weight_cupertino_picker_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -17,7 +18,7 @@ class UserDetailsPage extends StatefulWidget {
 
 class _UserDetailsPageState extends State<UserDetailsPage>
     with AutomaticKeepAliveClientMixin<UserDetailsPage> {
-  User user = getIt<User>();
+  // User user = getIt<User>();
 
   double _kItemExtent = 32.0;
 
@@ -214,60 +215,72 @@ class _UserDetailsPageState extends State<UserDetailsPage>
       }
 
       __weightPickerWidget() {
-        return SizedBox(
-          height: 200,
-          child: Row(
-            children: [
-              Expanded(
-                flex: 2,
-                child: CupertinoPickerWidget(
-                  capEndEdge: false,
-                  initialItem: indexKgCurrent,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  offAxisFraction: -0.5,
-                  list: listKg,
-                  onSelectedItemChanged: (index) {
-                    indexKgCurrent = index;
-                    setState(() {
-                      weightCurrent = double.parse(listKg[indexKgCurrent]) +
-                          double.parse("0.${listGram[indexGramCurrent]}");
-                    });
-                  },
-                ),
-              ),
-              // Expanded(child: const Text("cm"))
-              Expanded(
-                child: CupertinoPickerWidget(
-                  capStartEdge: false,
-                  capEndEdge: false,
-                  initialItem: indexGramCurrent,
-                  list: listGram,
-                  prefixText: ".",
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  padding: const EdgeInsets.only(right: 20),
-                  onSelectedItemChanged: (index) {
-                    indexGramCurrent = index;
-                    setState(() {
-                      weightCurrent = double.parse(listKg[indexKgCurrent]) +
-                          double.parse("0.${listGram[indexGramCurrent]}");
-                    });
-                  },
-                ),
-              ),
-              Expanded(
-                flex: 2,
-                child: CupertinoPickerWidget(
-                  capStartEdge: false,
-                  initialItem: 0,
-                  list: ["kg"],
-                  padding: const EdgeInsets.only(left: 20),
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  onSelectedItemChanged: (index) {},
-                ),
-              )
-            ],
-          ),
+        return WeightCupertinoPickerWidget(
+          weightHeight: weightCurrent,
+          indexKgCurrent: indexKgCurrent,
+          indexGramCurrent: indexGramCurrent,
+          callBackWeight: (weight, indexKg, indexGram){
+            setState(() {
+              weightCurrent = weight;
+              indexKgCurrent = indexKg;
+              indexGramCurrent = indexGram;
+            });
+          },
         );
+        // return SizedBox(
+        //   height: 200,
+        //   child: Row(
+        //     children: [
+        //       Expanded(
+        //         flex: 2,
+        //         child: CupertinoPickerWidget(
+        //           capEndEdge: false,
+        //           initialItem: indexKgCurrent,
+        //           mainAxisAlignment: MainAxisAlignment.end,
+        //           offAxisFraction: -0.5,
+        //           list: listKg,
+        //           onSelectedItemChanged: (index) {
+        //             indexKgCurrent = index;
+        //             setState(() {
+        //               weightCurrent = double.parse(listKg[indexKgCurrent]) +
+        //                   double.parse("0.${listGram[indexGramCurrent]}");
+        //             });
+        //           },
+        //         ),
+        //       ),
+        //       // Expanded(child: const Text("cm"))
+        //       Expanded(
+        //         child: CupertinoPickerWidget(
+        //           capStartEdge: false,
+        //           capEndEdge: false,
+        //           initialItem: indexGramCurrent,
+        //           list: listGram,
+        //           prefixText: ".",
+        //           mainAxisAlignment: MainAxisAlignment.end,
+        //           padding: const EdgeInsets.only(right: 20),
+        //           onSelectedItemChanged: (index) {
+        //             indexGramCurrent = index;
+        //             setState(() {
+        //               weightCurrent = double.parse(listKg[indexKgCurrent]) +
+        //                   double.parse("0.${listGram[indexGramCurrent]}");
+        //             });
+        //           },
+        //         ),
+        //       ),
+        //       Expanded(
+        //         flex: 2,
+        //         child: CupertinoPickerWidget(
+        //           capStartEdge: false,
+        //           initialItem: 0,
+        //           list: ["kg"],
+        //           padding: const EdgeInsets.only(left: 20),
+        //           mainAxisAlignment: MainAxisAlignment.start,
+        //           onSelectedItemChanged: (index) {},
+        //         ),
+        //       )
+        //     ],
+        //   ),
+        // );
       }
 
       return LayoutBuilder(
