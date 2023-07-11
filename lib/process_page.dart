@@ -1,14 +1,14 @@
+import 'dart:math';
 import 'dart:ui';
 
+import 'package:coros/widgets/level/level_percent_widget.dart';
 import 'package:coros/widgets/watch/watch_widget.dart';
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'animation_percent_circle_widget.dart';
 import 'color_config.dart';
-import 'widgets/magnifying_glass_painter.dart';
 import 'widgets/physical/physical_painter.dart';
 import 'widgets/radar/radar_widget.dart';
 import 'widgets/training_status/training_status_widget.dart';
@@ -537,7 +537,7 @@ class _ProcessPageState extends State<ProcessPage>
                                             padding:
                                                 const EdgeInsets.only(top: 30),
                                             child: CustomPaint(
-                                              painter: PhysicalPainter(1.0),
+                                              painter: PhysicalPainter(0.8),
                                             ),
                                           ),
                                           Column(
@@ -545,16 +545,14 @@ class _ProcessPageState extends State<ProcessPage>
                                               SizedBox(
                                                 height: 5,
                                               ),
-                                              Icon(
-                                                  Icons
-                                                      .self_improvement_outlined,
+                                              Icon(Icons.elderly_outlined,
                                                   color: Colors.white,
                                                   size: 40),
                                               SizedBox(
                                                 height: 5,
                                               ),
                                               Text(
-                                                "Sảng khoái",
+                                                "Hơi mệt",
                                                 style: TextStyle(
                                                     color: Colors.grey,
                                                     fontSize: 12),
@@ -630,10 +628,28 @@ class _ProcessPageState extends State<ProcessPage>
                                         ],
                                       );
                                     }(),
-                                    rightValueWidget: const RadarWidget()
+                                    // rightValueWidget: Stack(
+                                    //   alignment: Alignment.center,
+                                    //   children: const [
+                                    //     Padding(
+                                    //       padding: EdgeInsets.only(top: 0),
+                                    //       child:
+                                    //           LevelPercentWidget(value: 0.666),
+                                    //     ),
+                                    //   ],
+                                    // ),
+                                    // const RadarWidget()
                                   ),
                                   const SizedBox(
                                     height: 10,
+                                  ),
+                                  const LevelPercentWidget(value: 0.718),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  const RadarWidget(),
+                                  const SizedBox(
+                                    height: 30,
                                   ),
                                   if (tapEdit == false)
                                     Container(
@@ -670,23 +686,45 @@ class _ProcessPageState extends State<ProcessPage>
                             ),
                             if (showMagnifier)
                               Positioned(
-                                left: dragGesturePosition.dx,
-                                top: dragGesturePosition.dy,
-                                child:  RawMagnifier(
-                                  size: const Size(100, 100),
-                                  magnificationScale: 2,
-                                  focalPointOffset: Offset.zero,
-                                  // decoration: const MagnifierDecoration(
-                                  //   shape: CircleBorder(
-                                  //     side: BorderSide(
-                                  //         color: Colors.pink, width: 3),
-                                  //   ),
-                                  // ),
-                                  child: Center(
-                                    child: CustomPaint(
-                                      size:  const Size.fromRadius(50),
-                                      painter: MagnifyingGlassPainter(),
-                                    ),
+                                left: dragGesturePosition.dx - 120,
+                                top: dragGesturePosition.dy - 120,
+                                child: Container(
+                                  height: 130,
+                                  width: 130,
+                                  color: Colors.transparent,
+                                  child: Stack(
+                                    children: [
+                                      const RawMagnifier(
+                                        size: Size(100, 100),
+                                        magnificationScale: 2,
+                                        focalPointOffset: Offset.zero,
+                                        decoration: MagnifierDecoration(
+                                          shape: CircleBorder(
+                                            side: BorderSide(
+                                                color: Colors.white, width: 3),
+                                          ),
+                                        ),
+                                        // child: Center(
+                                        //   child: Container(
+                                        //     height: 10,
+                                        //     width: 3.0,
+                                        //     color: Colors.white,
+                                        //   ),
+                                        // ),
+                                      ),
+                                      Positioned(
+                                        bottom: -7,
+                                        right: 23,
+                                        child: Transform.rotate(
+                                          angle: pi / 2 + (pi / 4),
+                                          child: Container(
+                                            height: 60,
+                                            width: 3,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               )
