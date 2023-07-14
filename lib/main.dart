@@ -67,13 +67,13 @@ class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
-    // setState(() {
+    setState(() {
       _selectedIndex = index;
       pageController.jumpToPage(_selectedIndex);
       // pageController.animateToPage(_selectedIndex,
       //     duration: Duration(milliseconds: 50 * (_selectedIndex + 1)),
       //     curve: Curves.linear);
-    // });
+    });
   }
 
   @override

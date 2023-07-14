@@ -2,10 +2,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-class LevelPainter extends CustomPainter {
+class LevelControlPainter extends CustomPainter {
   final double value;
 
-  LevelPainter(this.value);
+  LevelControlPainter(this.value);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -70,53 +70,29 @@ class LevelPainter extends CustomPainter {
     canvas.drawArc(
         rectOut, pi + (pi / 5) * 4.75, widthDash, false, paintDashed);
 
-    double _value = value;
+    // double _value = value;
+    //
+    print("value $value");
 
     /// 270 -> 90 =
-    double degree = (270 - (1.8 * _value)) * (pi / 180);
+    double degree = (270 - (1.8 * value)) * (pi / 180);
+    // double degree =
+    //     ( (((offsetCenter.dx * offset.dx) + (offsetCenter.dy * offset.dy))
+    //             .abs()) /
+    //         (sqrt(pow(offsetCenter.dx, 2) + pow(offset.dx, 2)) *
+    //             sqrt(pow(offsetCenter.dy, 2) + pow(offset.dy, 2))));
+    // print("degree $degree");
+    // degree = degree * 100;
+    // print("degree $degree");
 
     double radiusIn = (size.width / 2) - (distanceBetweenTwoCircle / 2);
     double radiusOut = radiusIn + (distanceBetweenTwoCircle / 2);
-
-    // Offset offsetStart = Offset((radiusIn * sin(degree)) + offsetCenter.dx,
-    //     (radiusIn * cos(degree)) + offsetCenter.dx);
-    // Offset offsetEnd = Offset((radiusOut * sin(degree)) + offsetCenter.dx,
-    //     (radiusOut * cos(degree)) + offsetCenter.dx);
-    //
-    // double yDistanceTwoPointLeftRight;
-    // if (_value < 50) {
-    //   yDistanceTwoPointLeftRight = 2;
-    // } else if (_value > 50) {
-    //   yDistanceTwoPointLeftRight = -2;
-    // } else {
-    //   yDistanceTwoPointLeftRight = 0;
-    // }
-    //
-    // double xDistanceTwoPointLeftRight;
-    // if (_value == 0 || _value == 100) {
-    //   xDistanceTwoPointLeftRight = 0;
-    // } else {
-    //   xDistanceTwoPointLeftRight = 2;
-    // }
-    //
-    // final path = Path()
-    //       ..moveTo(offsetStart.dx + xDistanceTwoPointLeftRight,
-    //           offsetStart.dy - yDistanceTwoPointLeftRight) // nút phải
-    //       ..lineTo(offsetEnd.dx, offsetEnd.dy) // điểm nhọn
-    //       ..lineTo(offsetStart.dx - xDistanceTwoPointLeftRight,
-    //           offsetStart.dy + yDistanceTwoPointLeftRight) // nút trái
-    //     // ..lineTo(0, y)..lineTo(x / 2, 0)
-    //     ;
 
     var paintMini = Paint()
       ..color = Colors.white
       ..style = PaintingStyle.fill
       ..strokeWidth = 1
       ..strokeCap = StrokeCap.round;
-
-    // canvas.drawPath(path, paintMini);
-    //
-    // canvas.drawCircle(offsetStart, 2.5, paintMini);
 
     double disPointCenter = 2 * (pi / 180);
 

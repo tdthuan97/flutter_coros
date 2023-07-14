@@ -14,7 +14,7 @@ class AnimationPercentCircleWidget extends StatefulWidget {
 
 class _AnimationPercentCircleWidgetState
     extends State<AnimationPercentCircleWidget>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin , AutomaticKeepAliveClientMixin<AnimationPercentCircleWidget> {
   late AnimationController animationController;
 
   late Animation<double> animation;
@@ -24,6 +24,7 @@ class _AnimationPercentCircleWidgetState
     super.initState();
     animationController = AnimationController(
       vsync: this,
+      value: 0.0,
       duration: const Duration(milliseconds: 500),
     );
     animation = Tween(begin: 0.0, end: 1.0).animate(animationController);
@@ -33,7 +34,11 @@ class _AnimationPercentCircleWidgetState
           curve: Curves.easeInCirc);
     });
   }
-
+  @override
+  dispose() {
+    animationController.dispose(); // you need this
+    super.dispose();
+  }
   @override
   void didUpdateWidget(covariant AnimationPercentCircleWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -46,6 +51,7 @@ class _AnimationPercentCircleWidgetState
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return AnimatedBuilder(
         animation: animation,
         builder: (context, child) {
@@ -92,4 +98,8 @@ class _AnimationPercentCircleWidgetState
           );
         });
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

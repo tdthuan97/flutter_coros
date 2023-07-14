@@ -9,8 +9,10 @@ import 'package:flutter/material.dart';
 
 import 'animation_percent_circle_widget.dart';
 import 'color_config.dart';
+import 'widgets/flower/flower_widget.dart';
+import 'widgets/level_control/level_control_widget.dart';
 import 'widgets/physical/physical_painter.dart';
-import 'widgets/radar/radar_widget.dart';
+import 'widgets/postman/postman_circles_widget.dart';
 import 'widgets/training_status/training_status_widget.dart';
 import 'widgets/weight_cupertino_picker_widget.dart';
 
@@ -29,6 +31,9 @@ class _ProcessPageState extends State<ProcessPage>
 
   ScrollController scrollController = ScrollController();
   var refreshKey = GlobalKey<RefreshIndicatorState>();
+
+  var columnGlobalKey = GlobalKey();
+
   bool _blurAppbar = false;
 
   Offset dragGesturePosition = Offset.zero;
@@ -82,7 +87,11 @@ class _ProcessPageState extends State<ProcessPage>
   bool tapEdit = false;
 
   onTapEdit() {
-    scrollController.jumpTo(0.0);
+    try {
+      scrollController?.jumpTo(0.0);
+    } catch (ex) {
+      debugPrint("catch scrollController ${ex.toString()}");
+    }
     setState(() {
       tapEdit = true;
     });
@@ -453,210 +462,225 @@ class _ProcessPageState extends State<ProcessPage>
             ),
             child: Stack(
               children: [
-                SingleChildScrollView(
-                  controller: scrollController,
-                  physics:
-                      // NeverScrollableScrollPhysics(),
-                      tapEdit
-                          ? const AlwaysScrollableScrollPhysics()
-                          : const BouncingScrollPhysics(
-                              parent: AlwaysScrollableScrollPhysics()),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    // width: MediaQuery.of(context).size.width,
-                    child: ConstrainedBox(
-                        constraints:
-                            BoxConstraints(minHeight: constraint.maxHeight),
-                        child: Stack(
-                          children: [
-                            GestureDetector(
-                              onPanUpdate: onShowMagnifier,
-                              onPanEnd: (details) {
-                                setState(() {
-                                  showMagnifier = false;
-                                });
-                              },
-                              onLongPressEnd: (details) {
-                                setState(() {
-                                  showMagnifier = false;
-                                });
-                              },
-                              // onLongPressDown: onLongPressDownDetails,
-                              onLongPressMoveUpdate: onShowMagnifier,
-                              child: Column(
-                                children: [
-                                  const SizedBox(
-                                    height: kToolbarHeight,
-                                  ),
-                                  const SizedBox(
-                                    height: 40,
-                                  ),
-                                  __headerWidget(),
-                                  const SizedBox(
-                                    height: 30,
-                                  ),
-                                  __itemMiddleWidget(
-                                      iconData: Icons.calendar_today_outlined,
-                                      colorIconData: Colors.blue,
-                                      title: "Lịch tập",
-                                      content: "Tuần này không có lịch tập",
-                                      index: 0),
-                                  __itemMiddleWidget(
-                                      iconData: Icons.stacked_bar_chart,
-                                      colorIconData: const Color(0xff449BFA),
-                                      title: "Tình trạng luyện tập",
-                                      rightValueWidget:
-                                          const TrainingStatusWidget(),
-                                      leftValueWidget: const Text(
-                                        "Đang giảm",
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 18),
-                                      ),
-                                      index: 1),
-                                  __itemMiddleWidget(
-                                    iconData: Icons.bolt_outlined,
-                                    index: 2,
-                                    colorIconData: const Color(0xff31B8BD),
-                                    title: "Hồi phục",
-                                    content: "Hồi phục hoàn toàn",
-                                    paddingVertical: 10.0,
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  // width: MediaQuery.of(context).size.width,
+                  child: ConstrainedBox(
+                      constraints:
+                          BoxConstraints(minHeight: constraint.maxHeight),
+                      child: Stack(
+                        children: [
+                          GestureDetector(
+                            onPanUpdate: onShowMagnifier,
+                            onPanEnd: (details) {
+                              setState(() {
+                                showMagnifier = false;
+                              });
+                            },
+                            onLongPressEnd: (details) {
+                              setState(() {
+                                showMagnifier = false;
+                              });
+                            },
+                            // onLongPressDown: onLongPressDownDetails,
+                            onLongPressMoveUpdate: onShowMagnifier,
+                            child: ListView(
+                              controller: scrollController,
+                              physics:
+                                  // NeverScrollableScrollPhysics(),
+                                  tapEdit
+                                      ? const AlwaysScrollableScrollPhysics()
+                                      : const BouncingScrollPhysics(
+                                          parent:
+                                              AlwaysScrollableScrollPhysics()),
+                              children: [
+                                const SizedBox(
+                                  height: kToolbarHeight,
+                                ),
+                                const SizedBox(
+                                  height: 40,
+                                ),
+                                const PostmanCirclesWidget(),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                const FlowerWidget(),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                __headerWidget(),
+                                const SizedBox(
+                                  height: 30,
+                                ),
+                                __itemMiddleWidget(
+                                    iconData: Icons.calendar_today_outlined,
+                                    colorIconData: Colors.blue,
+                                    title: "Lịch tập",
+                                    content: "Tuần này không có lịch tập",
+                                    index: 0),
+                                __itemMiddleWidget(
+                                    iconData: Icons.stacked_bar_chart,
+                                    colorIconData: const Color(0xff449BFA),
+                                    title: "Tình trạng luyện tập",
+                                    rightValueWidget:
+                                        const TrainingStatusWidget(),
                                     leftValueWidget: const Text(
-                                      "100%",
+                                      "Đang giảm",
                                       style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 26,
-                                          fontWeight: FontWeight.bold),
+                                          color: Colors.white, fontSize: 18),
                                     ),
-                                    rightValueWidget: SizedBox(
-                                      height: 70,
-                                      width: 120,
-                                      child: Stack(
-                                        alignment: Alignment.center,
-                                        children: [
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 30),
-                                            child: CustomPaint(
-                                              painter: PhysicalPainter(0.8),
+                                    index: 1),
+                                __itemMiddleWidget(
+                                  iconData: Icons.bolt_outlined,
+                                  index: 2,
+                                  colorIconData: const Color(0xff31B8BD),
+                                  title: "Hồi phục",
+                                  content: "Hồi phục hoàn toàn",
+                                  paddingVertical: 10.0,
+                                  leftValueWidget: const Text(
+                                    "100%",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 26,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  rightValueWidget: SizedBox(
+                                    height: 70,
+                                    width: 120,
+                                    child: Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 30),
+                                          child: CustomPaint(
+                                            painter: PhysicalPainter(0.8),
+                                          ),
+                                        ),
+                                        Column(
+                                          children: const [
+                                            SizedBox(
+                                              height: 5,
                                             ),
-                                          ),
-                                          Column(
-                                            children: const [
-                                              SizedBox(
-                                                height: 5,
-                                              ),
-                                              Icon(Icons.elderly_outlined,
-                                                  color: Colors.white,
-                                                  size: 40),
-                                              SizedBox(
-                                                height: 5,
-                                              ),
-                                              Text(
-                                                "Hơi mệt",
-                                                style: TextStyle(
-                                                    color: Colors.grey,
-                                                    fontSize: 12),
-                                              )
-                                            ],
-                                          )
-                                        ],
-                                      ),
+                                            Icon(Icons.elderly_outlined,
+                                                color: Colors.white, size: 40),
+                                            SizedBox(
+                                              height: 5,
+                                            ),
+                                            Text(
+                                              "Hơi mệt",
+                                              style: TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: 12),
+                                            )
+                                          ],
+                                        )
+                                      ],
                                     ),
                                   ),
-                                  __itemMiddleWidget(
-                                      index: 3,
-                                      iconData: Icons.directions_run_outlined,
-                                      colorIconData: Colors.orange,
-                                      title: "Năng lực chạy bộ",
-                                      content:
-                                          "Hoàn thành bài kiểm tra Năng lực chạy bộ với đồng hồ COROS"),
-                                  __itemMiddleWidget(
-                                    index: 4,
-                                    iconData: Icons.accessibility_new_outlined,
-                                    colorIconData: Colors.red,
-                                    title: "Trọng lượng cơ thể",
-                                    leftValueWidget: () {
-                                      return Row(
-                                        textBaseline: TextBaseline.alphabetic,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.baseline,
-                                        children: [
-                                          const Text(
-                                            "62.0",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 30),
-                                          ),
-                                          const SizedBox(
-                                            width: 5.0,
-                                          ),
-                                          Text(
-                                            "kg",
-                                            style: TextStyle(
-                                                color: Colors.grey[500]),
-                                          ),
-                                          IconButton(
-                                              onPressed: () {
-                                                _showDialog(
-                                                    WeightCupertinoPickerWidget(
-                                                      heightWidget:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .height *
-                                                              0.3,
-                                                      weightHeight: 62.0,
-                                                      // indexKgCurrent: indexKgCurrent,
-                                                      // indexGramCurrent: indexGramCurrent,
-                                                      callBackWeight: (weight,
-                                                          indexKg, indexGram) {
-                                                        // setState(() {
-                                                        //   weightCurrent = weight;
-                                                        //   indexKgCurrent = indexKg;
-                                                        //   indexGramCurrent = indexGram;
-                                                        // });
-                                                      },
-                                                    ),
-                                                    "Trọng lượng cơ thể");
-                                              },
-                                              icon: Icon(
-                                                Icons
-                                                    .mode_edit_outline_outlined,
-                                                color: Colors.grey[500],
-                                                size: 18,
-                                              ))
-                                        ],
-                                      );
-                                    }(),
-                                    // rightValueWidget: Stack(
-                                    //   alignment: Alignment.center,
-                                    //   children: const [
-                                    //     Padding(
-                                    //       padding: EdgeInsets.only(top: 0),
-                                    //       child:
-                                    //           LevelPercentWidget(value: 0.666),
-                                    //     ),
-                                    //   ],
-                                    // ),
-                                    // const RadarWidget()
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  const LevelPercentWidget(value: 0.718),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  const RadarWidget(),
-                                  const SizedBox(
-                                    height: 30,
-                                  ),
-                                  if (tapEdit == false)
-                                    Container(
+                                ),
+                                __itemMiddleWidget(
+                                    index: 3,
+                                    iconData: Icons.directions_run_outlined,
+                                    colorIconData: Colors.orange,
+                                    title: "Năng lực chạy bộ",
+                                    content:
+                                        "Hoàn thành bài kiểm tra Năng lực chạy bộ với đồng hồ COROS"),
+                                __itemMiddleWidget(
+                                  index: 4,
+                                  iconData: Icons.accessibility_new_outlined,
+                                  colorIconData: Colors.red,
+                                  title: "Trọng lượng cơ thể",
+                                  leftValueWidget: () {
+                                    return Row(
+                                      textBaseline: TextBaseline.alphabetic,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.baseline,
+                                      children: [
+                                        const Text(
+                                          "62.0",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 30),
+                                        ),
+                                        const SizedBox(
+                                          width: 5.0,
+                                        ),
+                                        Text(
+                                          "kg",
+                                          style: TextStyle(
+                                              color: Colors.grey[500]),
+                                        ),
+                                        IconButton(
+                                            onPressed: () {
+                                              _showDialog(
+                                                  WeightCupertinoPickerWidget(
+                                                    heightWidget:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            0.3,
+                                                    weightHeight: 62.0,
+                                                    // indexKgCurrent: indexKgCurrent,
+                                                    // indexGramCurrent: indexGramCurrent,
+                                                    callBackWeight: (weight,
+                                                        indexKg, indexGram) {
+                                                      // setState(() {
+                                                      //   weightCurrent = weight;
+                                                      //   indexKgCurrent = indexKg;
+                                                      //   indexGramCurrent = indexGram;
+                                                      // });
+                                                    },
+                                                  ),
+                                                  "Trọng lượng cơ thể");
+                                            },
+                                            icon: Icon(
+                                              Icons.mode_edit_outline_outlined,
+                                              color: Colors.grey[500],
+                                              size: 18,
+                                            ))
+                                      ],
+                                    );
+                                  }(),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                const Center(
+                                    child: LevelPercentWidget(value: 0.718)),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                const Center(
+                                    child: LevelControlPercentWidget()),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                // Center(child: const RadarWidget()),
+                                const SizedBox(
+                                  height: 30,
+                                ),
+                                if (tapEdit == false)
+                                  // Center(
+                                  //   child: ElevatedButton(
+                                  //     style: ElevatedButton.styleFrom(shape: StadiumBorder(),minimumSize: Size(100, 43), backgroundColor:Color(0xff282E3C) ),
+                                  //     onPressed: () {
+                                  //       onTapEdit();
+                                  //     },
+                                  //     child: Text(
+                                  //       "Sửa",
+                                  //       style: TextStyle(color: Colors.white),
+                                  //     ),
+                                  //   ),
+                                  // ),
+                                  Center(
+                                    child: Container(
                                       height: 40,
                                       width: 100,
                                       decoration: BoxDecoration(
                                         color: const Color(0xff282E3C),
+                                        // color:  Colors.red,
                                         borderRadius:
                                             BorderRadius.circular(40.0),
                                       ),
@@ -678,59 +702,59 @@ class _ProcessPageState extends State<ProcessPage>
                                         ),
                                       ),
                                     ),
-                                  const SizedBox(
-                                    height: 100,
                                   ),
-                                ],
-                              ),
-                            ),
-                            if (showMagnifier)
-                              Positioned(
-                                left: dragGesturePosition.dx - 120,
-                                top: dragGesturePosition.dy - 120,
-                                child: Container(
-                                  height: 130,
-                                  width: 130,
-                                  color: Colors.transparent,
-                                  child: Stack(
-                                    children: [
-                                      const RawMagnifier(
-                                        size: Size(100, 100),
-                                        magnificationScale: 2,
-                                        focalPointOffset: Offset.zero,
-                                        decoration: MagnifierDecoration(
-                                          shape: CircleBorder(
-                                            side: BorderSide(
-                                                color: Colors.white, width: 3),
-                                          ),
-                                        ),
-                                        // child: Center(
-                                        //   child: Container(
-                                        //     height: 10,
-                                        //     width: 3.0,
-                                        //     color: Colors.white,
-                                        //   ),
-                                        // ),
-                                      ),
-                                      Positioned(
-                                        bottom: -7,
-                                        right: 23,
-                                        child: Transform.rotate(
-                                          angle: pi / 2 + (pi / 4),
-                                          child: Container(
-                                            height: 60,
-                                            width: 3,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                const SizedBox(
+                                  height: 100,
                                 ),
-                              )
-                          ],
-                        )),
-                  ),
+                              ],
+                            ),
+                          ),
+                          if (showMagnifier)
+                            Positioned(
+                              left: dragGesturePosition.dx - 120,
+                              top: dragGesturePosition.dy - 120,
+                              child: Container(
+                                height: 130,
+                                width: 130,
+                                color: Colors.transparent,
+                                child: Stack(
+                                  children: [
+                                    const RawMagnifier(
+                                      size: Size(100, 100),
+                                      magnificationScale: 2,
+                                      focalPointOffset: Offset.zero,
+                                      decoration: MagnifierDecoration(
+                                        shape: CircleBorder(
+                                          side: BorderSide(
+                                              color: Colors.white, width: 3),
+                                        ),
+                                      ),
+                                      // child: Center(
+                                      //   child: Container(
+                                      //     height: 10,
+                                      //     width: 3.0,
+                                      //     color: Colors.white,
+                                      //   ),
+                                      // ),
+                                    ),
+                                    Positioned(
+                                      bottom: -7,
+                                      right: 23,
+                                      child: Transform.rotate(
+                                        angle: pi / 2 + (pi / 4),
+                                        child: Container(
+                                          height: 60,
+                                          width: 3,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                        ],
+                      )),
                 ),
                 if (tapEdit)
                   Align(

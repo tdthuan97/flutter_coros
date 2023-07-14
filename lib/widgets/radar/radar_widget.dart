@@ -53,8 +53,6 @@ class _RadarWidgetState extends State<RadarWidget>
 }
 
 class RadarCirclePainter extends CustomPainter {
-
-
   @override
   void paint(Canvas canvas, Size size) {
     Color color = const Color(0xFF47A920);
@@ -83,6 +81,8 @@ class RadarCirclePainter extends CustomPainter {
 
     canvas.drawLine(Offset(0, radius), Offset(radius * 2, radius), paint);
     canvas.drawLine(Offset(radius, 0), Offset(radius, radius * 2), paint);
+
+    print("radar");
   }
 
   @override

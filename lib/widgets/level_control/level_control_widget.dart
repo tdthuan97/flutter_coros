@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
 
-import 'level_painter.dart';
+import 'level_control_painter.dart';
 
-class LevelPercentWidget extends StatefulWidget {
-  const LevelPercentWidget({Key? key, this.value = 0.0}) : super(key: key);
-  final double value;
+class LevelControlPercentWidget extends StatefulWidget {
+  const LevelControlPercentWidget({Key? key}) : super(key: key);
 
   @override
-  State<LevelPercentWidget> createState() => _LevelPercentWidgetState();
+  State<LevelControlPercentWidget> createState() =>
+      _LevelControlPercentWidgetState();
 }
 
-class _LevelPercentWidgetState extends State<LevelPercentWidget>
+class _LevelControlPercentWidgetState extends State<LevelControlPercentWidget>
     with
         SingleTickerProviderStateMixin,
-        AutomaticKeepAliveClientMixin<LevelPercentWidget> {
+        AutomaticKeepAliveClientMixin<LevelControlPercentWidget> {
   late AnimationController animationController;
 
   late Animation<double> animation;
+
+  Offset offset = const Offset(0, 0);
 
   @override
   void initState() {
@@ -27,7 +29,7 @@ class _LevelPercentWidgetState extends State<LevelPercentWidget>
     );
     animation = Tween(begin: 0.0, end: 1.0).animate(animationController);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      animationController.animateTo(widget.value,
+      animationController.animateTo(0.0,
           duration: const Duration(milliseconds: 800), curve: Curves.linear);
     });
   }
@@ -39,12 +41,12 @@ class _LevelPercentWidgetState extends State<LevelPercentWidget>
   }
 
   @override
-  void didUpdateWidget(covariant LevelPercentWidget oldWidget) {
+  void didUpdateWidget(covariant LevelControlPercentWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.value != oldWidget.value) {
-      animationController.animateTo(widget.value,
-          duration: const Duration(milliseconds: 500), curve: Curves.linear);
-    }
+    // if (widget.value != oldWidget.value) {
+    //   animationController.animateTo(widget.value,
+    //       duration: const Duration(milliseconds: 500), curve: Curves.linear);
+    // }
   }
 
   @override
@@ -62,11 +64,30 @@ class _LevelPercentWidgetState extends State<LevelPercentWidget>
                 width: 210,
                 child: Center(
                   child: Container(
-                    // color: Colors.teal,
+                    // color: Colors.grey.withOpacity(0.5),
                     height: 90,
                     width: 190,
-                    child: CustomPaint(
-                      painter: LevelPainter(100 * animation.value),
+                    child: GestureDetector(
+                      onTapDown: (details) {
+                        Offset offsetLocal = details.localPosition;
+
+                        double percent = (offsetLocal.dx / 190);
+                        animationController.animateTo(percent,
+                            duration: const Duration(milliseconds: 500),
+                            curve: Curves.linear);
+
+                      },
+                      // onLongPressMoveUpdate: (details){
+                      //   Offset offsetLocal = details.localPosition;
+                      //
+                      //   double percent = (offsetLocal.dx / 190);
+                      //   animationController.animateTo(percent,
+                      //       duration: const Duration(milliseconds: 500),
+                      //       curve: Curves.linear);
+                      // },
+                      child: CustomPaint(
+                        painter: LevelControlPainter(animation.value * 100),
+                      ),
                     ),
                   ),
                 ),
